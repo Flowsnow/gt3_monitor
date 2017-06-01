@@ -1,0 +1,12 @@
+appdirs==1.4.3
+configparser==3.5.0
+cx-Oracle==6.0b2
+packaging==16.8
+pycrypto==2.6.1
+PyInstaller==3.2.1
+pyparsing==2.2.0
+PyYAML==3.12
+requests==2.14.2
+shellescape==3.4.1
+six==1.10.0
+xlwt==1.2.0

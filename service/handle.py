@@ -8,7 +8,6 @@ Created on 5/25/17 3:09 PM
 @function: core service:handle
 """
 import cx_Oracle
-import configparser
 import os
 import hashlib
 from Crypto.Cipher import AES
@@ -17,11 +16,12 @@ import configparser
 
 
 class PasswordCrypto(object):
-    def __init__(self):
+    def __init__(self, cfg):
         key = 'servyou_password_key'
         self.key = hashlib.md5(key).hexdigest()
         self.mode = AES.MODE_CBC
         self.salt = b'0000000101000000'
+        self.cfg = cfg
 
     def encrypt(self, text):
         cipher = AES.new(self.key, self.mode, self.salt)
@@ -38,11 +38,9 @@ class PasswordCrypto(object):
             return password
         else:
             password_text = self.encrypt(text)
-            cfg = configparser.ConfigParser()
-            cfg.read(filenames='../config.ini', encoding='utf-8')
-            cfg.set(env, 'password', password_text)
-            cfg.set(env, 'flag', '1')
-            cfg.write(open('../config.ini', 'w'))
+            self.cfg.set(env, 'password', password_text)
+            self.cfg.set(env, 'flag', '1')
+            self.cfg.write(open('config.ini', 'w'))
             return text
 
 
@@ -250,7 +248,7 @@ select ltr.*,
             url = self.cfg.get(env, 'url')
             diskgroup = self.cfg.get(env, 'diskgroup')
             flag = self.cfg.get(env, 'flag')
-            pc = PasswordCrypto()
+            pc = PasswordCrypto(self.cfg)
             password = pc(flag, env, password)
             db = cx_Oracle.connect(username, password, url)
             self.handle_tablespace(self.excel.tablespace_sheet, db)
