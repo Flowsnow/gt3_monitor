@@ -45,8 +45,8 @@ class Tablespace:
         self._sheet.write(self._row, 3, '表空间大小', style=STYLE_HEAD)
         self._sheet.write(self._row, 4, '数据文件大小', style=STYLE_HEAD)
         self._sheet.write(self._row, 5, '已用空间', style=STYLE_HEAD)
-        self._sheet.write(self._row, 6, '可用空间', style=STYLE_HEAD)
-        self._sheet.write(self._row, 7, '利用率', style=STYLE_HEAD)
+        self._sheet.write(self._row, 6, '利用率', style=STYLE_HEAD)
+        self._sheet.write(self._row, 7, '可用空间', style=STYLE_HEAD)
         self._row_inc()
 
     def insert(self, *args):

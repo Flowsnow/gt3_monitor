@@ -39,4 +39,4 @@ class Excel:
         path = self.cfg.get('basic', 'store_path')
         if not os.path.exists(path):
             os.mkdir(path)
-        self.workbook.save('{}/个人税收管理系统每日检查_{}.xls'.format(path, datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
+        self.workbook.save('{}/{}.xls'.format(path, datetime.datetime.now().strftime('%Y%m%d%H%M%S')))

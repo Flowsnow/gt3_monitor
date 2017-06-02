@@ -160,7 +160,7 @@ class DatabasesHandler:
        TO_CHAR((D.TOT_GROOTTE_MB - F.TOTAL_BYTES) / 1024),
        TO_CHAR(ROUND((D.TOT_GROOTTE_MB - F.TOTAL_BYTES) / D.TOT_GROOTTE_MB * 100,
                      2),
-               '990.99'),
+               '990.99') as usage,
        to_char(F.TOTAL_BYTES)
   FROM (SELECT TABLESPACE_NAME,
                ROUND(SUM(BYTES) / (1024 * 1024), 2) TOTAL_BYTES,
@@ -174,8 +174,7 @@ class DatabasesHandler:
          GROUP BY DD.TABLESPACE_NAME) D,
        v$database K
  WHERE D.TABLESPACE_NAME = F.TABLESPACE_NAME
- ORDER BY 1
-"""
+ order by usage desc"""
         result = self.query(sql, db)
         for row in result:
             sheet.insert(*row)
@@ -185,19 +184,19 @@ class DatabasesHandler:
        d.LOG_MODE,
        decode(d.log_mode,
               'ARCHIVELOG',
-              (select t.TOTAL_MB from v$asm_diskgroup t where t.NAME = '{}'),
+              (select t.TOTAL_MB from v$asm_diskgroup t where t.NAME = '{0}'),
               'NOARCHIVELOG',
               0),
        decode(d.log_mode,
               'ARCHIVELOG',
               (select t.TOTAL_MB - t.FREE_MB
                  from v$asm_diskgroup t
-                where t.NAME = 'FRA'),
+                where t.NAME = '{0}'),
               'NOARCHIVELOG',
               0),
        decode(d.log_mode,
               'ARCHIVELOG',
-              (select t.FREE_MB from v$asm_diskgroup t where t.NAME = 'FRA'),
+              (select t.FREE_MB from v$asm_diskgroup t where t.NAME = '{0}'),
               'NOARCHIVELOG',
               0)
   from v$database d
