@@ -239,6 +239,8 @@ select ltr.*,
             sheet.insert(*row)
 
     def run(self):
+        if not self.cfg.has_option('basic', 'db_env'):
+            return
         db_env = self.cfg.get('basic', 'db_env')
         for env in db_env.split(','):
             env = env.strip()

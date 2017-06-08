@@ -43,7 +43,10 @@ class FitSheetWrapper(object):
         return width if width < 65535 else 65535
 
     def write(self, r, c, label='', *args, **kwargs):
-        self.sheet.write(r, c, label, *args, **kwargs)
+        try:
+            self.sheet.write(r, c, label, *args, **kwargs)
+        except UnicodeDecodeError:
+            self.sheet.write(r, c, label.decode('utf-8', 'replace').encode('utf-8'), *args, **kwargs)
         width = self.get_width(label)
         if width > self.widths.get(c, 0):
             self.widths[c] = width
