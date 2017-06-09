@@ -1,2 +1,8 @@
 .idea
 .python-version
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
