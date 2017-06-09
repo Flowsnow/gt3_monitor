@@ -45,9 +45,11 @@ class FitSheetWrapper(object):
     def write(self, r, c, label='', *args, **kwargs):
         try:
             self.sheet.write(r, c, label, *args, **kwargs)
+            width = self.get_width(label)
         except UnicodeDecodeError:
-            self.sheet.write(r, c, label.decode('utf-8', 'replace').encode('utf-8'), *args, **kwargs)
-        width = self.get_width(label)
+            new_label = label.decode('utf-8', 'replace').encode('utf-8')
+            self.sheet.write(r, c, new_label, *args, **kwargs)
+            width = self.get_width(new_label)
         if width > self.widths.get(c, 0):
             self.widths[c] = width
             self.sheet.col(c).width = width
