@@ -8,6 +8,7 @@ Created on 5/27/17 2:49 PM
 @function: excel width fit
 """
 import string
+import sys
 
 
 class FitSheetWrapper(object):
@@ -26,6 +27,8 @@ class FitSheetWrapper(object):
 
     @staticmethod
     def get_width(label):
+        reload(sys)
+        sys.setdefaultencoding('utf-8')  # to solve ascii encoding error in str()
         chinese_cnt = 0
         upper_cnt = 0
         for i in str(label):
