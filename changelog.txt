@@ -27,3 +27,8 @@
 现象：报错提示无法执行二进制文件，无法执行一个没有明确格式的文件
 分析：linux和aix系统架构不一样，在linux上打包的可执行文件在aix时无法执行，通常，该错误消息表示Linux不能将该文件识别为可执行文件。https://superuser.com/questions/435988/how-can-i-resolve-the-error-cannot-execute-binary-file
 解决：研究新的打包方式：将Oracle客户端lib下的5个so文件加载到gt3_app包中，从而去除数据库环境依赖
+
+8、【程序错误-湖南、上海】 解决excel单元格宽度自适应时出现的ascii编码问题
+现象：Excel报表没有产生，单独执行gt3_app之后，出现ascii编码问题
+分析：在计算单元格应占有宽度时出现字符串中有无法使用ascii编码的字符，导致python内部报错
+解决：加上异常处理，出现错误时捕获，并用指定字符替代之后再计算单元格应占有宽度
