@@ -10,9 +10,10 @@ Created on 5/25/17 10:32 AM
 from service.handle import FilesHandler, DatabasesHandler
 from component.excel import Excel
 import configparser
-from service.backup import backup
+from service.backup import backup, error_backup
 import logging
 import datetime
+import os
 
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s',
@@ -20,13 +21,12 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(th
 
 
 def start():
+    logging.info('========================================================')
+    logging.info('TIMESTAMP: {}'.format(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
+    config = configparser.ConfigParser()
+    config.read(filenames='config.ini', encoding='utf-8')
+    excel = Excel(config)
     try:
-        logging.info('========================================================')
-        logging.info('TIMESTAMP: {}'.format(datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
-        config = configparser.ConfigParser()
-        config.read(filenames='config.ini', encoding='utf-8')
-        excel = Excel(config)
-
         # handle database
         logging.info('starting to handle database items')
         dh = DatabasesHandler(excel, config)
@@ -46,6 +46,7 @@ def start():
         backup(config)
     except Exception as e:
         logging.exception(e)
+        error_backup(config)
         raise e
 
 
