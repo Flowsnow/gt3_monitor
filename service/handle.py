@@ -14,10 +14,10 @@ from Crypto.Cipher import AES
 from binascii import b2a_hex, a2b_hex
 import configparser
 import logging
-import datetime
 
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s',
+                    filename='gt3_app.log', filemode='a')
 
 
 class PasswordCrypto(object):

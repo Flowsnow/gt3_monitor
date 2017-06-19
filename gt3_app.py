@@ -15,8 +15,8 @@ import logging
 import datetime
 
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s')
-
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s',
+                    filename='gt3_app.log', filemode='a')
 
 def start():
     logging.info('========================================================')

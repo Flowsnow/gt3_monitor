@@ -22,8 +22,8 @@ import os
 import logging
 
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s')
-
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s',
+                    filename='gt3_app.log', filemode='a')
 
 class Excel:
     def __init__(self, cfg):
