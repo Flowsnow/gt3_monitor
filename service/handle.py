@@ -13,6 +13,11 @@ import hashlib
 from Crypto.Cipher import AES
 from binascii import b2a_hex, a2b_hex
 import configparser
+import logging
+import datetime
+
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s')
 
 
 class PasswordCrypto(object):
@@ -54,6 +59,7 @@ class FilesHandler:
         self.bak_path = self.data_path + '/bak'
 
     def handle_cpu(self, cfg_file, ip):
+        logging.info('handle {}.log : acquire cpu info'.format(ip))
         try:
             options = cfg_file.options('cpujc')
             args = [cfg_file.get('cpujc', o) for o in options]
@@ -63,12 +69,14 @@ class FilesHandler:
             print('section cpujc has error')
 
     def handle_memory(self, cfg_file, ip):
+        logging.info('handle {}.log : acquire memory info'.format(ip))
         options = cfg_file.options('freejc')
         args = [cfg_file.get('freejc', o) for o in options]
         args.insert(0, ip)
         self.excel.memory_sheet.insert(*args)
 
     def handle_file_system(self, cfg_file, ip):
+        logging.info('handle {}.log : acquire file system info'.format(ip))
         options = cfg_file.options('dfhpjc')
         file_systems = filter(lambda x: '.' not in x, options)
         for system in file_systems:
@@ -79,6 +87,7 @@ class FilesHandler:
             self.excel.disk_use_sheet.insert(*args)
 
     def handle_busy(self, cfg_file, ip):
+        logging.info('handle {}.log : acquire disk busy info'.format(ip))
         options = cfg_file.options('sardjc')
         disks = set([option.partition('.')[0] for option in options])
         for disk in disks:
@@ -89,6 +98,7 @@ class FilesHandler:
             self.excel.disk_busy_sheet.insert(*args)
 
     def handle_alert(self, cfg_file, ip):
+        logging.info('handle {}.log : acquire alert log info'.format(ip))
         if cfg_file.has_section('alertjc'):
             options = cfg_file.options('alertjc')
             if options:
@@ -104,6 +114,7 @@ class FilesHandler:
             pass
 
     def handle_ogg(self, cfg_file, ip):
+        logging.info('handle {}.log : acquire ogg info'.format(ip))
         if cfg_file.has_section('oggjc'):
             options = cfg_file.options('oggjc')
             if options:
@@ -123,6 +134,7 @@ class FilesHandler:
 
     def handle_file(self, f):
         ip = f[:-4]
+        logging.info('starting to handle {}.log'.format(ip))
         cfg_file = configparser.ConfigParser()
         cfg_file.read('{}/{}'.format(self.file_path, f))
         self.handle_cpu(cfg_file, ip)
@@ -131,6 +143,7 @@ class FilesHandler:
         self.handle_busy(cfg_file, ip)
         self.handle_alert(cfg_file, ip)
         self.handle_ogg(cfg_file, ip)
+        logging.info('handle {}.log finished'.format(ip))
 
     def run(self):
         if not os.path.exists(self.data_path):
@@ -250,8 +263,13 @@ select ltr.*,
             diskgroup = self.cfg.get(env, 'diskgroup')
             flag = self.cfg.get(env, 'flag')
             pc = PasswordCrypto(self.cfg)
+            logging.info('{}@{} : acquire password from config.ini'.format(username, url))
             password = pc(flag, env, password)
+            logging.info('{}@{} : connect'.format(username, url))
             db = cx_Oracle.connect(username, password, url)
+            logging.info('{}@{} : query tablespace'.format(username, url))
             self.handle_tablespace(self.excel.tablespace_sheet, db)
+            logging.info('{}@{} : query database lock'.format(username, url))
             self.handle_lock(self.excel.db_lock_sheet, db)
+            logging.info('{}@{} : query archive diskgroup'.format(username, url))
             self.handle_archive(self.excel.archive_sheet, db, diskgroup)

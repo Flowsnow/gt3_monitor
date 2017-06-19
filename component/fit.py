@@ -1,5 +1,5 @@
 #!/usr/bin/env python  
-# encoding: utf-8  
+# -*- coding: utf-8 -*-
 
 """
 Created on 5/27/17 2:49 PM
@@ -9,6 +9,10 @@ Created on 5/27/17 2:49 PM
 """
 import string
 import sys
+import logging
+
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s')
 
 
 class FitSheetWrapper(object):
@@ -50,6 +54,7 @@ class FitSheetWrapper(object):
             self.sheet.write(r, c, label, *args, **kwargs)
             width = self.get_width(label)
         except UnicodeDecodeError:
+            logging.warning('UnicodeDecodeError : {}'.format(label))
             new_label = label.decode('utf-8', 'replace').encode('utf-8')
             self.sheet.write(r, c, new_label, *args, **kwargs)
             width = self.get_width(new_label)

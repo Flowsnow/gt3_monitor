@@ -19,6 +19,10 @@ from ogg import OGG
 import xlwt
 import datetime
 import os
+import logging
+
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s [%(threadName)s] %(message)s')
 
 
 class Excel:
@@ -39,4 +43,6 @@ class Excel:
         path = self.cfg.get('basic', 'store_path')
         if not os.path.exists(path):
             os.mkdir(path)
-        self.workbook.save('{}/{}.xls'.format(path, datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
+        t = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        logging.info('excel name : {}.xls'.format(t))
+        self.workbook.save('{}/{}.xls'.format(path, t))
