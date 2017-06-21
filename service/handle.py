@@ -9,6 +9,7 @@ Created on 5/25/17 3:09 PM
 """
 import cx_Oracle
 import os
+import sys
 import hashlib
 from Crypto.Cipher import AES
 from binascii import b2a_hex, a2b_hex
@@ -133,6 +134,8 @@ class FilesHandler:
             pass
 
     def handle_file(self, f):
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
         ip = f[:-4]
         logging.info('starting to handle {}.log'.format(ip))
         cfg_file = configparser.ConfigParser()
