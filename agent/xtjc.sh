@@ -17,6 +17,10 @@ user=oracle
 #服务端服务器主机IP地址,使用预生产数据库主机作为服务端服务器，确保该主机可以和所有被检查主机ssh互信。
 ip=x.x.x.x
 osbb=`uname -a |awk '{print $1}'`
+#oracle软件安装目录 echo $ORACLE_HOME查看目录，例如：export ORACLE_HOME=/u01/app/oracle/11.2.0/db_1
+export ORACLE_HOME=
+#oracle LIBRARY库路径，echo $LD_LIBRARY_PATH查看目录，例如：export LD_LIBRARY_PATH=$ORACLE_HOME/ggsyy:$ORACLE_HOME/lib:/home/oracle
+export LD_LIBRARY_PATH=
 
 function cpujc(){
 	echo "[cpujc]" > $logfile
@@ -28,7 +32,7 @@ function cpujc(){
 function aixcpujc(){
         echo "[cpujc]" > $logfile
         w |head -1 |awk -F 'age:' '{print $2}' |awk '{print "load1="$1"\n", "load5="$2"\n", "load15="$3}' |sed 's/,//g'|sed 's/^[ \t]*//g' >> $logfile
-	vmstat 1 3|tail -1 |awk '{print "user="$13"\n""kern="$14"\n", "wait="$16"\n", "idle="$15}'|sed 's/^[ \t]*//g' >> $logfile
+	vmstat 1 3|tail -1 |awk '{print "user="$14"\n""kern="$15"\n", "wait="$17"\n", "idle="$16}'|sed 's/^[ \t]*//g' >> $logfile
         echo "" >> $logfile
 }
 
@@ -74,9 +78,9 @@ function alertjc(){
 	if [ $flag -eq 1 ];then
 		echo "[alertjc]" >> $logfile
 		j=0
-		for i in `tail -900 $ORACLE_ALERT|grep "ORA-"|sed 's/[ \t]//g'`;do
+		for i in `tail -900 $ORACLE_ALERT|grep "ORA-"|sed 's/[ \t]//g' |sed 's/%/%%/g'`;do
 			let j+=1
-			echo "error$j='''$i'''" >>$logfile
+			echo "error$j='$i'" >>$logfile
 		done
 	fi
 }
